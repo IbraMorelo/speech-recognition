@@ -1,0 +1,7 @@
+derecha
+rapido
+lento
+atras
+adelante
+alto
+izquierda
