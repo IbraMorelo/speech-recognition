@@ -19,7 +19,7 @@ seed = 42
 tf.random.set_seed(seed)
 np.random.seed(seed)
 
-data_dir = pathlib.Path('/Users/ibrahimmemorelo/U/proyecto_de_grado/repos/speech-recognition-data-set/audios_original')
+data_dir = pathlib.Path('/Users/ibrahimmemorelo/U/proyecto_de_grado/repos/speech-recognition-data-set/users/audios_augmentation')
 
 commands = np.array(tf.io.gfile.listdir(str(data_dir)))
 commands = commands[commands != '.DS_Store']
@@ -64,9 +64,6 @@ def decode_audio(audio_binary):
 
 def get_label(file_path):
   parts = tf.strings.split(file_path, os.path.sep)
-
-  # Note: You'll use indexing here instead of tuple unpacking to enable this 
-  # to work in a TensorFlow graph.
   return parts[-2]
 
 def get_waveform_and_label(file_path):
@@ -78,6 +75,21 @@ def get_waveform_and_label(file_path):
 AUTOTUNE = tf.data.AUTOTUNE
 files_ds = tf.data.Dataset.from_tensor_slices(train_files)
 waveform_ds = files_ds.map(get_waveform_and_label, num_parallel_calls=AUTOTUNE)
+
+# rows = 2
+# cols = 2
+# n = rows*cols
+# fig, axes = plt.subplots(rows, cols, figsize=(5, 6))
+# for i, (audio, label) in enumerate(waveform_ds.take(n)):
+#   r = i // cols
+#   c = i % cols
+#   ax = axes[r][c]
+#   ax.plot(audio.numpy())
+#   ax.set_yticks(np.arange(-1.2, 1.2, 0.2))
+#   label = label.numpy().decode('utf-8')
+#   ax.set_title(label)
+
+# plt.show()
 
 def stft(x):
     f, t, spec = signal.stft(x.numpy(), fs=16000, nperseg=255, noverlap = 124, nfft=256)
@@ -95,6 +107,14 @@ def get_spectrogram(waveform):
 
   return spectrogram
 
+def plot_spectrogram(spectrogram, ax):
+  log_spec = np.log(spectrogram)
+  height = log_spec.shape[0]
+  X = np.arange(16000, step=height + 1)
+  Y = range(height)
+  print(X.shape, Y, log_spec.shape)
+  ax.pcolormesh(X, Y, log_spec)
+
 
 def get_spectrogram_and_label_id(audio, label):
   spectrogram = get_spectrogram(audio)
@@ -104,6 +124,19 @@ def get_spectrogram_and_label_id(audio, label):
 
 spectrogram_ds = waveform_ds.map(
     get_spectrogram_and_label_id, num_parallel_calls=AUTOTUNE)
+
+# rows = 2
+# cols = 2
+# n = rows*cols
+# fig, axes = plt.subplots(rows, cols, figsize=(6, 6))
+# for i, (spectrogram, label_id) in enumerate(spectrogram_ds.take(n)):
+#   r = i // cols
+#   c = i % cols
+#   ax = axes[r][c]
+#   plot_spectrogram(np.squeeze(spectrogram.numpy()), ax)
+#   ax.set_title(commands[label_id.numpy()])
+#   ax.axis('off')
+# plt.show()
 
 def preprocess_dataset(files):
   files_ds = tf.data.Dataset.from_tensor_slices(files)
@@ -186,6 +219,14 @@ print(report_dictionary)
 
 test_acc = sum(y_pred == y_true) / len(y_true)
 print(f'Test set accuracy: {test_acc:.0%}')
+
+confusion_mtx = tf.math.confusion_matrix(y_true, y_pred) 
+plt.figure(figsize=(10, 8))
+sns.heatmap(confusion_mtx, xticklabels=commands, yticklabels=commands, 
+            annot=True, fmt='g')
+plt.xlabel('Prediction')
+plt.ylabel('Label')
+plt.show()
 
 commands = np.empty(0)
 with open('commands.txt', 'r') as f:

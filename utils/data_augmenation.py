@@ -34,7 +34,7 @@ def pitch_shifting(wav:np.array, sr:int, file_path:str):
 	sf.write(file_path.split('.')[0]+'_pitch_shift'+'.wav', wav_pitch_sf, sr, 'PCM_16')
 
 def aumentation_bulk():
-	data_path = pathlib.Path('/Users/ibrahimmemorelo/U/proyecto_de_grado/code/speech-recognition-data-set/rapido/initial_convertion/audio_cut/final_convertion/aumentation')
+	data_path = pathlib.Path('/Users/ibrahimmemorelo/U/proyecto_de_grado/repos/speech-recognition-data-set/users/audios_augmentation/adelante')
 	for x in data_path.iterdir():
 		if not str(x).endswith('.DS_Store'):
 			aumentation(str(x))
