@@ -46,4 +46,10 @@ Clasica un espectrograma en el modelo previamente entrenado, retorna el comando 
 Pruebas unitarias del módulo anterior
 
 ## model_commands_recognition_edgetpu.tflite
-Modelo con soporte de los comandos: 'derecha', 'rapido', 'lento', 'despacio', 'atras', 'adelante', 'alto', 'izquierda'
+Modelo con soporte de los comandos: 'derecha', 'rapido', 'despacio', 'atras', 'adelante', 'alto', 'izquierda'
+
+## audio_test
+Audios usados para pruebas unitarias
+
+## htmlcov
+Reporte de pruebas unitarias
