@@ -7,7 +7,7 @@
 * Micrófono que trabajé a una frecuencia de muestreo mínima de 48.000 hz
 
 ## Módulos
-
+Ingresar a cada carpeta para más detalles.
 * audio_tream = Orientado el reconocimiento de comandos de voz en tiempo real
 * models = Modelos machine learning generados 
 * train_model = Entrenamiento del modelo
