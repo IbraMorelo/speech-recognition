@@ -8,6 +8,18 @@
 
 ## SpeechRecognition.py
 
+### Variables
+* chunk: Tamaño de las muestras de audios capturas por segundo, entre mayor sea este número, mayor es la latencia del micrófono.
+* threshold_volumen: Umbral para detectar actividad de sonido
+* threshold_commands: Umbral de clasificación de audios
+* format_audio: Formato del audio
+* channels: Canal de salida
+* input_microphone_rate: Frecuencia de muestreo del micrófono
+* resample_rate: Frecuencia de muestreo requerida por tensorflow
+* model_path: Ruta del modelo usado para la clasificación
+* log_file: Archivo de loggeo
+* factor_downsampling: Factor para reducir frecuencia de muestreo 
+
 ### __init__
 * Inicializa la configuración del micrófono
 * Inicializa el array de señales de audio
