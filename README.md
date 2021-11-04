@@ -22,8 +22,8 @@ pip3 install -r requirements.txt
 
 ## Módulos
 Ingresar a cada carpeta para más detalles.
-* [audio_tream](https://github.com/IbraMorelo/speech-recognition/blob/main/audio_stream/README.md) = Orientado el reconocimiento de comandos de voz en tiempo real
-* models = Modelos machine learning generados 
+* [audio_tream](https://github.com/IbraMorelo/speech-recognition/blob/main/audio_stream) = Orientado el reconocimiento de comandos de voz en tiempo real
+* [models](https://github.com/IbraMorelo/speech-recognition/tree/main/models) = Modelos machine learning generados 
 * train_model = Entrenamiento del modelo
 * Utils = Utilidaes para cortar, convertir y aumentar muestras de audios
 
