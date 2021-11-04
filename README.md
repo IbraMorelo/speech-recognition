@@ -25,7 +25,7 @@ Ingresar a cada carpeta para más detalles.
 * [audio_tream](https://github.com/IbraMorelo/speech-recognition/blob/main/audio_stream) = Orientado el reconocimiento de comandos de voz en tiempo real
 * [models](https://github.com/IbraMorelo/speech-recognition/tree/main/models) = Modelos machine learning generados 
 * [train_model](https://github.com/IbraMorelo/speech-recognition/tree/main/train_model) = Entrenamiento del modelo
-* Utils = Utilidaes para cortar, convertir y aumentar muestras de audios
+* Utils = Utilidaes para cortar (audio_preprocessing.py), convertir (audio_convert.py) y aumentar muestras de audios (data_augmenation.py)
 
 ## Nota
 El sistema entero esta desarrollado con Python haciendo uso de [TensorFlow](https://www.tensorflow.org/install). 
