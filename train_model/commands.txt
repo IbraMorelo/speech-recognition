@@ -1,6 +1,5 @@
 derecha
 rapido
-lento
 despacio
 atras
 adelante

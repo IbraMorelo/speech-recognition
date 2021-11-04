@@ -48,7 +48,6 @@ class SpeechRecognitionTest(TestCase):
 
 	def test_get_record(self):
 		init_sr = sr.SpeechRecognition()
-		expected_output = ''
 		init_sr.enqueue_frames([1])
 		init_sr.enqueue_frames([2])
 		self.assertFalse(init_sr.get_record())

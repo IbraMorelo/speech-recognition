@@ -9,9 +9,7 @@ import numpy as np
 import pyaudio
 import noisereduce as nr
 import logging
-import wave
-import pickle
-import queue
+import uuid
 
 # Variables
 chunk = 1024
@@ -21,12 +19,16 @@ format_audio = pyaudio.paInt16
 channels = 1
 input_microphone_rate = 48000
 resample_rate = 16000
-record_seconds = 1
-n_frames = int(input_microphone_rate / chunk * record_seconds)
-model_path = 'model_commands_recognition_edgetpu.tflite'
-commands = ['derecha', 'rapido', 'lento', 'despacio', 'atras', 'adelante', 'alto', 'izquierda']
-log_file = 'invoke_time_coral.log'
+model_path = 'models/model_commands_recognition_edgetpu.tflite'
+log_file = 'time_elapsed.log'
 factor_downsampling = int(input_microphone_rate / resample_rate)
+commands = np.empty(0)
+with open('commands.txt', 'r') as f:
+    new = f.readlines()
+    commands = []
+    for w in new:
+        k = w.replace('\n', '')
+        commands.append(k)
 
 # Init Interpreter
 interpreter = edgetpu.make_interpreter(model_path)
@@ -48,7 +50,7 @@ class SpeechRecognition:
                                   rate = input_microphone_rate,
                                   input = True,
                                   frames_per_buffer = chunk,
-                                  input_device_index = 0,
+                                  input_device_index = 2,
                                   stream_callback=self.enqueue_frames)
 
     def __exit__(self, exception_type, exception_value, traceback):
@@ -61,6 +63,7 @@ class SpeechRecognition:
         return None, pyaudio.paContinue
 
     def get_record(self):
+        start_time = timer()
         isFinished = False
         count = 0
         record_frames = []
@@ -86,6 +89,12 @@ class SpeechRecognition:
             waveform_processed = self.process_audio_data(waveform_original)
             spectrogram = self.get_spectrogram(waveform_processed)
             command = self.run_inference(spectrogram)
+
+            # Log
+            time_elapsed = timer() - start_time
+            random_name = uuid.uuid4().hex
+            logging.debug(' | ' + str(time_elapsed) + ' | ' + command + ' | ' + random_name)
+
             return command
         else:
             return ''
@@ -125,15 +134,13 @@ class SpeechRecognition:
         input_data = spectrogram.astype(np.float32)
 
         common.set_input(interpreter, input_data)
-        start_time = timer()
+        
         interpreter.invoke()
-        time_elapsed = timer() - start_time
         
         tensor_results = classify.get_scores(interpreter)
         index_selected = np.argmax(tensor_results)
         command = commands[index_selected]
         command_value = softmax(tensor_results)[index_selected]
         if command_value >= threshold_commands:
-            logging.debug('Invoke Inference Coral | ' + str(time_elapsed) + ' | ' + command)
             return command
         return '' 

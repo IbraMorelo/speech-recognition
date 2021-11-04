@@ -1,18 +1,15 @@
 import os
 import pathlib
-
-import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 import tensorflow as tf
-
+from tensorflow import lite
 from tensorflow.keras.layers.experimental import preprocessing
 from tensorflow.keras import layers
 from tensorflow.keras import models
 from sklearn.metrics import classification_report
-from IPython import display
 from scipy import signal
-from tensorflow import lite
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Set seed for experiment reproducibility
 seed = 42
@@ -76,21 +73,6 @@ AUTOTUNE = tf.data.AUTOTUNE
 files_ds = tf.data.Dataset.from_tensor_slices(train_files)
 waveform_ds = files_ds.map(get_waveform_and_label, num_parallel_calls=AUTOTUNE)
 
-# rows = 2
-# cols = 2
-# n = rows*cols
-# fig, axes = plt.subplots(rows, cols, figsize=(5, 6))
-# for i, (audio, label) in enumerate(waveform_ds.take(n)):
-#   r = i // cols
-#   c = i % cols
-#   ax = axes[r][c]
-#   ax.plot(audio.numpy())
-#   ax.set_yticks(np.arange(-1.2, 1.2, 0.2))
-#   label = label.numpy().decode('utf-8')
-#   ax.set_title(label)
-
-# plt.show()
-
 def stft(x):
     f, t, spec = signal.stft(x.numpy(), fs=16000, nperseg=255, noverlap = 124, nfft=256)
     return tf.convert_to_tensor(np.abs(spec))
@@ -107,15 +89,6 @@ def get_spectrogram(waveform):
 
   return spectrogram
 
-def plot_spectrogram(spectrogram, ax):
-  log_spec = np.log(spectrogram)
-  height = log_spec.shape[0]
-  X = np.arange(16000, step=height + 1)
-  Y = range(height)
-  print(X.shape, Y, log_spec.shape)
-  ax.pcolormesh(X, Y, log_spec)
-
-
 def get_spectrogram_and_label_id(audio, label):
   spectrogram = get_spectrogram(audio)
   spectrogram = tf.expand_dims(spectrogram, -1)
@@ -124,19 +97,6 @@ def get_spectrogram_and_label_id(audio, label):
 
 spectrogram_ds = waveform_ds.map(
     get_spectrogram_and_label_id, num_parallel_calls=AUTOTUNE)
-
-# rows = 2
-# cols = 2
-# n = rows*cols
-# fig, axes = plt.subplots(rows, cols, figsize=(6, 6))
-# for i, (spectrogram, label_id) in enumerate(spectrogram_ds.take(n)):
-#   r = i // cols
-#   c = i % cols
-#   ax = axes[r][c]
-#   plot_spectrogram(np.squeeze(spectrogram.numpy()), ax)
-#   ax.set_title(commands[label_id.numpy()])
-#   ax.axis('off')
-# plt.show()
 
 def preprocess_dataset(files):
   files_ds = tf.data.Dataset.from_tensor_slices(files)
@@ -194,11 +154,6 @@ history = model.fit(
     callbacks=tf.keras.callbacks.EarlyStopping(verbose=1, patience=2),
 )
 
-metrics = history.history
-plt.plot(history.epoch, metrics['loss'], metrics['val_loss'])
-plt.legend(['loss', 'val_loss'])
-plt.show()
-
 test_audio = []
 test_labels = []
 
@@ -212,14 +167,6 @@ test_labels = np.array(test_labels)
 y_pred = np.argmax(model.predict(test_audio), axis=1)
 y_true = test_labels
 
-report_dictionary = classification_report(y_true, 
-                                          y_pred, 
-                                          output_dict = False)
-print(report_dictionary)              
-
-test_acc = sum(y_pred == y_true) / len(y_true)
-print(f'Test set accuracy: {test_acc:.0%}')
-
 confusion_mtx = tf.math.confusion_matrix(y_true, y_pred) 
 plt.figure(figsize=(10, 8))
 sns.heatmap(confusion_mtx, xticklabels=commands, yticklabels=commands, 
@@ -228,21 +175,17 @@ plt.xlabel('Prediction')
 plt.ylabel('Label')
 plt.show()
 
-commands = np.empty(0)
-with open('commands.txt', 'r') as f:
-    new = f.readlines()
-    commands = []
-    for w in new:
-        k = w.replace('\n', '')
-        commands.append(k)
-print(commands)
+report_dictionary = classification_report(y_true, 
+                                          y_pred, 
+                                          output_dict = False)
+print(report_dictionary)
 
 model_filename_tflite = 'model_commands_recognition.tflite'
 
 converter = lite.TFLiteConverter.from_keras_model(model)
 converter.optimizations = [tf.lite.Optimize.DEFAULT]
 tflite_model = converter.convert()
-tflite_models_dir = pathlib.Path("/Users/ibrahimmemorelo/U/proyecto_de_grado/repos/speech-recognition/models/")
+tflite_models_dir = pathlib.Path("../models/")
 tflite_models_dir.mkdir(exist_ok=True, parents=True)
 tflite_model_file = tflite_models_dir/model_filename_tflite
 tflite_model_file.write_bytes(tflite_model)
