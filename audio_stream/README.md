@@ -19,6 +19,7 @@
 * model_path: Ruta del modelo usado para la clasificación
 * log_file: Archivo de loggeo
 * factor_downsampling: Factor para reducir frecuencia de muestreo 
+* commands: Comandos soportado por el modelo
 
 ### __init__
 * Inicializa la configuración del micrófono
