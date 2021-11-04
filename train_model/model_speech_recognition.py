@@ -8,8 +8,6 @@ from tensorflow.keras import layers
 from tensorflow.keras import models
 from sklearn.metrics import classification_report
 from scipy import signal
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 # Set seed for experiment reproducibility
 seed = 42
@@ -166,14 +164,6 @@ test_labels = np.array(test_labels)
 
 y_pred = np.argmax(model.predict(test_audio), axis=1)
 y_true = test_labels
-
-confusion_mtx = tf.math.confusion_matrix(y_true, y_pred) 
-plt.figure(figsize=(10, 8))
-sns.heatmap(confusion_mtx, xticklabels=commands, yticklabels=commands, 
-            annot=True, fmt='g')
-plt.xlabel('Prediction')
-plt.ylabel('Label')
-plt.show()
 
 report_dictionary = classification_report(y_true, 
                                           y_pred, 
