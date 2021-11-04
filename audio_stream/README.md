@@ -6,6 +6,11 @@
 * Pycoral 2.0.0
 * [Noisereduce](https://github.com/timsainb/noisereduce) 2.0.0
 
+## Instalación de paquetes
+```
+pip3 install -r requirements.txt 
+```
+
 ## SpeechRecognition.py
 
 ### Variables
