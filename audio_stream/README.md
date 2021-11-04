@@ -26,7 +26,7 @@
 * Inicializa el array de señales de audio
 
 ### __enter__
-* Abre la recepción de señales de audio
+* Abre la recepción de señales de audio, en el parametro *input_device_index* se declara el indexes del microfóno a usar.
 
 ### __exit__
 * Detiene la recepción de audio y para el sistema
@@ -63,3 +63,6 @@ Audios usados para pruebas unitarias
 
 ## htmlcov
 Reporte de pruebas unitarias
+
+## Devices.py
+Muestra los indexes de los dispositivos soportados
