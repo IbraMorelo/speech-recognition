@@ -6,19 +6,6 @@
 * Pycoral 2.0.0
 * [Noisereduce](https://github.com/timsainb/noisereduce) 2.0.0
 
-## Ambiente virtual
-Python ofrece la posibilidad de crear ambientes virtuales para no afectar la configuración global del sistema.
-```
-python3 -m venv ./virtual-environment
-```
-```
-source ./venv/bin/activate
-```
-## Instalación de paquetes
-```
-pip3 install -r requirements.txt 
-```
-
 ## SpeechRecognition.py
 
 ### Variables
