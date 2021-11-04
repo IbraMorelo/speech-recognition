@@ -66,3 +66,6 @@ Reporte de pruebas unitarias
 
 ## Devices.py
 Muestra los indexes de los dispositivos soportados
+
+## IntegrationExample.py
+Finalmente esta clase presenta un ejemplo de como debe ser implementado el sistema de Reconocimiento de voz
